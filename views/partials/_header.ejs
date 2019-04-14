@@ -1,0 +1,35 @@
+<div class='px-5 m-0 bg-dark border rounded-pill float-left clearfix'>
+  <h1 class='text-light align-middle'>TinyApp</h1>
+</div>
+<ul class="nav justify-content-center">
+  <li class="nav-item">
+    <a class="nav-link active" href="/urls">Home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/urls/new">Create URL</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/login">Login</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/register">Register</a>
+  </li>
+  <% if(user) { %>
+    <li class="nav-item">
+      <form class="form-inline" action="/logout" method="POST">
+    <div class="form-group mb-2">
+      <button type="submit" class="btn btn-primary">Logout</button>
+    </div>
+      </form>
+    </li>
+  <% } %>
+</ul>
+
+<div class="d-block p-2 m-5 bg-dark">
+</div>
+
+<% if(user) { %>
+  <div>
+    <h2>Hello <%= user.email %>! </h2>
+  </div>
+<% } %>

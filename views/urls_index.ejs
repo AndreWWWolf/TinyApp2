@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <title>TinyApp</title>
+</head>
+<body style="font-size:20px; padding:50px;">
+  <% include partials/_header %>
+  <% if(user) { %>
+    <div class='px-5 m-0 bg-light border rounded float-center text-center clearfix'>
+      <h3>My URLs</h3>
+    </div>
+      <% if(urls)  { %>
+      <% for(keyURL in urls) { %>
+      <div class="shadow p-3 mb-5 bg-white rounded float-center p-2 m-2 col-m-6 text-center">
+        <div class="card d-inline border-0 col" style="width: 6rem;">
+          <div class="card-body">
+            <a href="./u/<%= keyURL %>" class="card-title" > <%= keyURL %> </a>
+            <h6 class="card-subtitle mb-2 m-1 p-1 text-muted">Mapped to <%= urls[keyURL].longURL%></h6>
+            <a href="/urls/<%= keyURL%>" class="card-link d-inline">Edit</a>
+            <form class="card-link d-inline" method="POST" action="/urls/<%=keyURL%>/delete?_method=DELETE">
+                <button type="submit" class="btn btn-primary d-inline">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <% } %>
+    </div>
+  <% } %>
+  <% } else { %>
+    <div class="shadow p-3 mb-5 bg-white rounded p-5 m-5">
+      <p>Please register or log in to your account to view or create new URLs</p>
+    </div>
+  <% } %>
+</body>
+</html>

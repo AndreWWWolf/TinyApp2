@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <title>TinyApp</title>
+  </head>
+
+  <body style="font-size:20px; padding:50px;">
+    <% include partials/_header %>
+    <% if(user) { %>
+      <div class='px-5 m-0 bg-light border rounded float-center clearfix'>
+        <h3>Create TinyURL</h3>
+        <form class="form-inline" action="/urls/new" method="POST">
+          <div class="form-group mb-2">
+            <label for="longURL">Enter a URL:</label>
+            <input class="form-control" type="text" name="longURL" placeholder="http://" style="width: 300px; margin: 1em">
+            <button type="submit" class="btn btn-primary">Update</button>
+          </div>
+        </form>
+      </div>
+    <% } else { %>
+      <div class="shadow p-3 mb-5 bg-white rounded p-5 m-5">
+        <p>Please register or log in to your account to view or create new URLs</p>
+      </div>
+   <% } %>
+  </body>
+</html>
