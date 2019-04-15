@@ -6,7 +6,7 @@ const morgan = require('morgan');
 // separated helper functions to a separate module
 const helpers = require('./functions');
 const bcrypt = require('bcrypt');
-const methodOverride = require('method-override');
+// const methodOverride = require('method-override');
 const moment = require('moment');
 
 const urlDatabase = {
@@ -39,7 +39,7 @@ app.use(cookieSession({
   keys: ['user_id']
 }));
 app.use(morgan('dev'));
-app.use(methodOverride('_method'));
+// app.use(methodOverride('_method'));
 
 // takes client to home page ('/urls')
 app.get('/', (req, res) => {
@@ -199,8 +199,13 @@ app.post('/logout', (req, res) => {
 });
 
 // checks to see if shortURL is under client's account, deletes if it is and sends 403 if not
-app.delete('/urls/:shortURL/delete', (req, res) => {
-  if (urlDatabase[req.params.shortURL].userID === req.session.user_id) {
+// *For METHOD OVERRIDE use:
+// app.delete('/urls/:shortURL/delete', (req, res) => {
+//   if (urlDatabase[req.params.shortURL].userID === req.session.user_id) {
+  // instead of next 3 lines
+app.post('/urls/:shortURL/delete', (req, res) => {
+  console.log(urlDatabase[req.params.shortURL]);
+  if (urlDatabase[req.params.shortURL].getUserID === req.session.user_id) {
     delete urlDatabase[req.params.shortURL];
     res.redirect('/urls');
   } else {
@@ -244,7 +249,8 @@ app.get('/urls/:shortURL', (req, res) => {
 });
 
 // remaps shortURL redirection to a new longURL specified by client, checks to make sure client owns the shortURL link, shows errors pages if user auth failed or shortURL does not exist
-app.put('/urls/:shortURL', (req, res) => {
+// app.put('/urls/:shortURL', (req, res) => { *FOR METHODOVERRIDE*
+  app.post('/urls/:shortURL', (req, res) => {
   if (req.params.shortURL) {
     let currentUser = req.session.user_id;
     if (currentUser === urlDatabase[req.params.shortURL].userID) {

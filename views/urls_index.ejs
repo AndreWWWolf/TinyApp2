@@ -23,7 +23,10 @@
             <a href="./u/<%= keyURL %>" class="card-title" > <%= keyURL %> </a>
             <h6 class="card-subtitle mb-2 m-1 p-1 text-muted">Mapped to <%= urls[keyURL].longURL%></h6>
             <a href="/urls/<%= keyURL%>" class="card-link d-inline">Edit</a>
-            <form class="card-link d-inline" method="POST" action="/urls/<%=keyURL%>/delete?_method=DELETE">
+            <!-- for METHOD OVERRIDE USE: -->
+            <!-- <form class="card-link d-inline" method="POST" action="/urls/<%=keyURL%>/delete?_method=DELETE"> -->
+              <!-- instead of next form line -->
+               <form class="card-link d-inline" method="POST" action="/urls/<%=keyURL%>/delete">
                 <button type="submit" class="btn btn-primary d-inline">Delete</button>
             </form>
           </div>
