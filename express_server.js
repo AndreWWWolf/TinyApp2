@@ -3,11 +3,11 @@ const app = express();
 const cookieSession = require('cookie-session');
 const PORT = 8080;
 const morgan = require('morgan');
+const bcrypt = require('bcrypt');
+const moment = require('moment');
+const bodyParser = require('body-parser');
 // separated helper functions to a separate module
 const funcs = require('./functions');
-const bcrypt = require('bcrypt');
-// const methodOverride = require('method-override');
-const moment = require('moment');
 
 const urlDatabase = {
   /*
@@ -29,8 +29,7 @@ const users = {
   */
 };
 
-const bodyParser = require('body-parser');
-
+// initialize required modules
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
   extended: true
@@ -39,7 +38,6 @@ app.use(cookieSession({
   keys: ['user_id']
 }));
 app.use(morgan('dev'));
-// app.use(methodOverride('_method'));
 
 // takes client to home page ('/urls')
 app.get('/', (req, res) => {
@@ -62,7 +60,6 @@ app.get('/u/:shortURL', (req, res) => {
   } else {
     res.render('urls_not_found', templateVars);
   }
-
 });
 
 // renders index page on get request
@@ -77,7 +74,8 @@ app.get('/urls', (req, res) => {
   res.render('urls_index', templateVars);
 });
 
-// creates a new short url on post request if the user is logged in, if posting without user auth, redirects back to /urls to tell user to log in
+// creates a new short url on post request if the user is logged in,
+ // if posting without user auth, redirects back to /urls to tell user to log in
 app.post('/urls/new', (req, res) => {
   if (req.session.user_id) {
     // make sure user is logged in and received input
@@ -119,8 +117,8 @@ app.get('/register', (req, res) => {
     let templateVars = {
     user: users[activeUser],
     urls: urlDatabase
-  };
-  res.render('urls_registration', templateVars);
+    };
+    res.render('urls_registration', templateVars);
   }
 });
 
@@ -163,11 +161,11 @@ app.get('/login', (req, res) => {
   if(activeUser) {
     res.redirect('/urls');
   } else {
-     let templateVars = {
-    user: users[activeUser],
-    urls: urlDatabase
-  };
-  res.render('urls_login', templateVars);
+    let templateVars = {
+      user: users[activeUser],
+      urls: urlDatabase
+    };
+    res.render('urls_login', templateVars);
   }
 });
 
@@ -201,14 +199,8 @@ app.post('/logout', (req, res) => {
 });
 
 // checks to see if shortURL is under client's account, deletes if it is and sends 403 if not
-// *For METHOD OVERRIDE use:
-// app.delete('/urls/:shortURL/delete', (req, res) => {
-//   if (urlDatabase[req.params.shortURL].userID === req.session.user_id) {
-  // instead of next 3 lines
 app.post('/urls/:shortURL/delete', (req, res) => {
-  console.log(urlDatabase[req.params.shortURL]);
-  if (urlDatabase[req.params.shortURL].getUserID === req.session.user_id) {
-
+  if (urlDatabase[req.params.shortURL].userID === req.session.user_id) {
     delete urlDatabase[req.params.shortURL];
     res.redirect('/urls');
   } else {
@@ -228,7 +220,6 @@ app.get('/urls/new', (req, res) => {
   } else {
     res.redirect('/login');
   }
-
 });
 
 // gets shortURL data if user is logged in,
@@ -256,8 +247,7 @@ app.get('/urls/:shortURL', (req, res) => {
 // remaps shortURL redirection to a new longURL specified by client,
  // checks to make sure client owns the shortURL link,
  // shows errors pages if user auth failed or shortURL does not exist
-// app.put('/urls/:shortURL', (req, res) => { *FOR METHODOVERRIDE use in place of next*
-  app.post('/urls/:shortURL', (req, res) => {
+app.post('/urls/:shortURL', (req, res) => {
   if (req.params.shortURL) {
     let activeUser = req.session.user_id;
     if (activeUser === urlDatabase[req.params.shortURL].userID) {
