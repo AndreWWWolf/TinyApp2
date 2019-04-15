@@ -4,7 +4,7 @@ const cookieSession = require('cookie-session');
 const PORT = 8080;
 const morgan = require('morgan');
 // separated helper functions to a separate module
-const helpers = require('./functions');
+const funcs = require('./functions');
 const bcrypt = require('bcrypt');
 // const methodOverride = require('method-override');
 const moment = require('moment');
@@ -69,7 +69,7 @@ app.get('/u/:shortURL', (req, res) => {
 app.get('/urls', (req, res) => {
   let activeUser = req.session.user_id;
   // urlsForUser returns obj list containing URLs that belong to current user
-  let userURLs = helpers.urlsForUser(urlDatabase, activeUser);
+  let userURLs = funcs.urlsForUser(urlDatabase, activeUser);
   let templateVars = {
     user: users[activeUser],
     urls: userURLs
@@ -83,12 +83,12 @@ app.post('/urls/new', (req, res) => {
     // make sure user is logged in and received input
     if (req.body.longURL) {
       // generateStr() returns a 6 length string that was randomly generated
-      let newShortURL = helpers.generateStr();
+      let newShortURL = funcs.generateStr();
       let currentTime = moment.utc().local().format('YYYY-MM-DD hh:mm:ss a');
       console.log(currentTime);
       // make sure there isnt an existing short URL with the same random string
       if (urlDatabase[newShortURL]) {
-        newShortURL = helpers.generateStr();
+        newShortURL = funcs.generateStr();
       } else {
         urlDatabase[newShortURL] = {
           longURL: req.body.longURL,
@@ -115,12 +115,13 @@ app.get('/register', (req, res) => {
   let activeUser = req.session.user_id;
   if(activeUser) {
     res.redirect('/urls');
-  }
-  let templateVars = {
+  } else {
+    let templateVars = {
     user: users[activeUser],
     urls: urlDatabase
   };
   res.render('urls_registration', templateVars);
+  }
 });
 
 // creates an user account in the database on post request, no prior user auth checked.
@@ -129,7 +130,7 @@ app.post('/register', (req, res) => {
   let templateVars = {
     user: users[activeUser]
   };
-  let newId = helpers.generateStr();
+  let newId = funcs.generateStr();
   let newEmail = req.body.email;
   let newPassword = bcrypt.hashSync(req.body.password, 10);
   // make sure some input is received
@@ -138,12 +139,12 @@ app.post('/register', (req, res) => {
     res.render('urls_empty_fields', templateVars);
     // renders the email error page if an prior account with same email is found
     // emailCheck returns boolean value to check if entered email is already in user database
-  } else if (helpers.emailCheck(users, newEmail)) {
+  } else if (funcs.emailCheck(users, newEmail)) {
     res.render('urls_email', templateVars);
   } else {
     // make sure there isn't duplicate user ids
     if (users[newId]) {
-      newId = helpers.generateStr();
+      newId = funcs.generateStr();
     } else {
       users[newId] = {
         id: newId,
@@ -161,12 +162,13 @@ app.get('/login', (req, res) => {
   let activeUser = req.session.user_id;
   if(activeUser) {
     res.redirect('/urls');
-  }
-  let templateVars = {
+  } else {
+     let templateVars = {
     user: users[activeUser],
     urls: urlDatabase
   };
   res.render('urls_login', templateVars);
+  }
 });
 
 // on post request to /login, checks if inputted email exists, and if so checks if entered password matches the hashed password from registation, redirects the client to home page on completion and to error pages if bad request were made
@@ -178,7 +180,7 @@ app.post('/login', (req, res) => {
     user: users[activeUser]
   };
   // getUserID returns a string, the userID for the user if email matches with the database
-  let userID = helpers.getUserID(users, loginEmail);
+  let userID = funcs.getUserID(users, loginEmail);
   if (!userID) {
     // displays error page of non existing account to client
     res.render('urls_no_account', templateVars);
@@ -254,7 +256,7 @@ app.get('/urls/:shortURL', (req, res) => {
 // remaps shortURL redirection to a new longURL specified by client,
  // checks to make sure client owns the shortURL link,
  // shows errors pages if user auth failed or shortURL does not exist
-// app.put('/urls/:shortURL', (req, res) => { *FOR METHODOVERRIDE use in place of next line*
+// app.put('/urls/:shortURL', (req, res) => { *FOR METHODOVERRIDE use in place of next*
   app.post('/urls/:shortURL', (req, res) => {
   if (req.params.shortURL) {
     let activeUser = req.session.user_id;

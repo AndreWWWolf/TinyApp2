@@ -12,7 +12,7 @@
 <body style="font-size:20px; padding:50px;">
   <% include partials/_header %>
   <% if(user) { %>
-    <div class='px-5 m-0 bg-light border rounded float-center text-center clearfix'>
+    <div class='px-5 m-0 bg-success border rounded float-center text-center clearfix'>
       <h3>My URLs</h3>
     </div>
       <% if(urls)  { %>
@@ -27,7 +27,7 @@
             <!-- <form class="card-link d-inline" method="POST" action="/urls/<%=keyURL%>/delete?_method=DELETE"> -->
               <!-- instead of next form line -->
                <form class="card-link d-inline" method="POST" action="/urls/<%=keyURL%>/delete">
-                <button type="submit" class="btn btn-primary d-inline">Delete</button>
+                <button type="submit" class="btn btn-success d-inline">Delete</button>
             </form>
           </div>
         </div>
