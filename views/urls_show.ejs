@@ -12,13 +12,13 @@
   <% include partials/_header %>
   <% if(user && user.id === userID) { %>
   <div class='px-5 m-4 bg-light border rounded float-center clearfix'>
-    <h3>Short URL: <a href="../u/<%= shortURL %>"> u/<%= shortURL %> </a>for <%= longURL %></h3>
+    <h3>Code: <a href="../u/<%= shortURL %>"> u/<%= shortURL %> </a>will currently link to: <%= longURL %></h3>
     <!-- for METHOD OVERRIDE USE:
     <form class="form-inline" action="/urls/<%- shortURL%>?_method=PUT" method="POST">
     instead of next form line -->
     <form class="form-inline" action="/urls/<%- shortURL%>" method="POST">
       <div class="form-group mb-2">
-        <label for="longURL">Enter a URL to remap to shortURL: </label>
+        <label for="longURL">Please Enter URL you want this code to link to: </label>
         <input class="form-control" type="text" name="longURL" placeholder="http://" style="width: 300px; margin: 1em">
         <button type="submit" class="btn btn-primary">Submit</button>
         </div>

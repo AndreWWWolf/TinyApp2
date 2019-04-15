@@ -52,9 +52,9 @@ app.get('/', (req, res) => {
 
 // redirects the client to the longURL
 app.get('/u/:shortURL', (req, res) => {
-  let currentUser = req.session.user_id;
+  let activeUser = req.session.user_id;
   let templateVars = {
-    user: users[currentUser]
+    user: users[activeUser]
   }
   if (urlDatabase[req.params.shortURL]) {
     const longURL = urlDatabase[req.params.shortURL].longURL;
@@ -67,11 +67,11 @@ app.get('/u/:shortURL', (req, res) => {
 
 // renders index page on get request
 app.get('/urls', (req, res) => {
-  let currentUser = req.session.user_id;
+  let activeUser = req.session.user_id;
   // urlsForUser returns obj list containing URLs that belong to current user
-  let userURLs = helpers.urlsForUser(urlDatabase, currentUser);
+  let userURLs = helpers.urlsForUser(urlDatabase, activeUser);
   let templateVars = {
-    user: users[currentUser],
+    user: users[activeUser],
     urls: userURLs
   };
   res.render('urls_index', templateVars);
@@ -98,9 +98,9 @@ app.post('/urls/new', (req, res) => {
       }
       res.redirect(`/urls/${newShortURL}`);
     } else {
-      let currentUser = req.session.user_id;
+      let activeUser = req.session.user_id;
       let templateVars = {
-        user: users[currentUser],
+        user: users[activeUser],
         urls: urlDatabase
       };
       res.render("urls_new", templateVars);
@@ -112,12 +112,12 @@ app.post('/urls/new', (req, res) => {
 
 // renders register page on get request
 app.get('/register', (req, res) => {
-  let currentUser = req.session.user_id;
-  if(currentUser) {
+  let activeUser = req.session.user_id;
+  if(activeUser) {
     res.redirect('/urls');
   }
   let templateVars = {
-    user: users[currentUser],
+    user: users[activeUser],
     urls: urlDatabase
   };
   res.render('urls_registration', templateVars);
@@ -125,9 +125,9 @@ app.get('/register', (req, res) => {
 
 // creates an user account in the database on post request, no prior user auth checked.
 app.post('/register', (req, res) => {
-  let currentUser = req.session.user_id;
+  let activeUser = req.session.user_id;
   let templateVars = {
-    user: users[currentUser]
+    user: users[activeUser]
   };
   let newId = helpers.generateStr();
   let newEmail = req.body.email;
@@ -158,12 +158,12 @@ app.post('/register', (req, res) => {
 
 // renders the login page for the client
 app.get('/login', (req, res) => {
-  let currentUser = req.session.user_id;
-  if(currentUser) {
+  let activeUser = req.session.user_id;
+  if(activeUser) {
     res.redirect('/urls');
   }
   let templateVars = {
-    user: users[currentUser],
+    user: users[activeUser],
     urls: urlDatabase
   };
   res.render('urls_login', templateVars);
@@ -171,11 +171,11 @@ app.get('/login', (req, res) => {
 
 // on post request to /login, checks if inputted email exists, and if so checks if entered password matches the hashed password from registation, redirects the client to home page on completion and to error pages if bad request were made
 app.post('/login', (req, res) => {
-  let currentUser = req.session.user_id;
+  let activeUser = req.session.user_id;
   let loginEmail = req.body.email;
   let loginPassword = req.body.password;
   let templateVars = {
-    user: users[currentUser]
+    user: users[activeUser]
   };
   // getUserID returns a string, the userID for the user if email matches with the database
   let userID = helpers.getUserID(users, loginEmail);
@@ -206,6 +206,7 @@ app.post('/logout', (req, res) => {
 app.post('/urls/:shortURL/delete', (req, res) => {
   console.log(urlDatabase[req.params.shortURL]);
   if (urlDatabase[req.params.shortURL].getUserID === req.session.user_id) {
+
     delete urlDatabase[req.params.shortURL];
     res.redirect('/urls');
   } else {
@@ -216,9 +217,9 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 // renders page to create new url link, redirects to login if user is not logged in
 app.get('/urls/new', (req, res) => {
   if (req.session.user_id) {
-    let currentUser = req.session.user_id;
+    let activeUser = req.session.user_id;
     let templateVars = {
-      user: users[currentUser],
+      user: users[activeUser],
       urls: urlDatabase
     };
     res.render("urls_new", templateVars);
@@ -228,35 +229,39 @@ app.get('/urls/new', (req, res) => {
 
 });
 
-// gets shortURL data if user is logged in, if shortURL is not in database, renders a not found page for client
+// gets shortURL data if user is logged in,
+// if shortURL is not in database,
+// renders a not found page for client
 app.get('/urls/:shortURL', (req, res) => {
   if (urlDatabase[req.params.shortURL]) {
-    let currentUser = req.session.user_id;
+    let activeUser = req.session.user_id;
     let templateVars = {
-      user: users[currentUser],
+      user: users[activeUser],
       shortURL: req.params.shortURL,
       longURL: urlDatabase[req.params.shortURL].longURL,
       userID: urlDatabase[req.params.shortURL].userID
     };
     res.render("urls_show", templateVars);
   } else {
-    let currentUser = req.session.user_id;
+    let activeUser = req.session.user_id;
     let templateVars = {
-      user: users[currentUser]
+      user: users[activeUser]
     };
     res.render("urls_not_found", templateVars);
   }
 });
 
-// remaps shortURL redirection to a new longURL specified by client, checks to make sure client owns the shortURL link, shows errors pages if user auth failed or shortURL does not exist
-// app.put('/urls/:shortURL', (req, res) => { *FOR METHODOVERRIDE*
+// remaps shortURL redirection to a new longURL specified by client,
+ // checks to make sure client owns the shortURL link,
+ // shows errors pages if user auth failed or shortURL does not exist
+// app.put('/urls/:shortURL', (req, res) => { *FOR METHODOVERRIDE use in place of next line*
   app.post('/urls/:shortURL', (req, res) => {
   if (req.params.shortURL) {
-    let currentUser = req.session.user_id;
-    if (currentUser === urlDatabase[req.params.shortURL].userID) {
+    let activeUser = req.session.user_id;
+    if (activeUser === urlDatabase[req.params.shortURL].userID) {
       urlDatabase[req.params.shortURL].longURL = req.body.longURL;
       let templateVars = {
-        user: users[currentUser],
+        user: users[activeUser],
         shortURL: req.params.shortURL,
         longURL: urlDatabase[req.params.shortURL].longURL,
         userID: urlDatabase[req.params.shortURL].userID
@@ -266,9 +271,9 @@ app.get('/urls/:shortURL', (req, res) => {
       res.status(403).send('You are not the owner of the short URL or not logged in!');
     }
   } else {
-    let currentUser = req.session.user_id;
+    let activeUser = req.session.user_id;
     let templateVars = {
-      user: users[currentUser]
+      user: users[activeUser]
     };
     res.render("urls_not_found", templateVars);
   }
