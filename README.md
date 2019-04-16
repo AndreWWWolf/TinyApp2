@@ -4,19 +4,19 @@ README.md
 TinyAPp is a full stack web application built with Node and Express that allows users to shorten long URLS (à la bit.ly).
 
 ##Final Product
-Register Page
+!["Register Page"](https://github.com/AndreWWWolf/TinyApp2/blob/master/docs/RegisterPage.png?raw=true)
 
-Login Page
+!["Login Page"](https://github.com/AndreWWWolf/TinyApp2/blob/master/docs/LoginPage.png?raw=true)
 
-Home Page
+!["Home Page"](https://github.com/AndreWWWolf/TinyApp2/blob/master/docs/HomePage.png?raw=true)
 
-Empty URL Database
+!["Empty URL Database"](https://github.com/AndreWWWolf/TinyApp2/blob/master/docs/EmptyURLDatabase.png?raw=true)
 
-URL Code Creator
+!["URL Code Creator"](https://github.com/AndreWWWolf/TinyApp2/blob/master/docs/URLShortener.png?raw=true)
 
-URL Code Editor
+!["URL Code Editor"](https://github.com/AndreWWWolf/TinyApp2/blob/master/docs/URLEditPage.png?raw=true)
 
-Filled URL Database
+!["Filled URL Database"](https://github.com/AndreWWWolf/TinyApp2/blob/master/docs/FilledURLDatabase.png?raw=true)
 
 
 
